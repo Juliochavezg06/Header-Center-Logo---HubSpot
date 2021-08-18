@@ -1,0 +1,93 @@
+<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<header class="header">
+  <div class="container">
+    <div class="columns is-gapless is-multiline is-mobile is-vcentered">
+      <div class="logo_desktop_remove">
+        <div class="column is-12-mobile is-12-tablet is-0-desktop is-0-widescreen is-0-fullhd">
+          <div class="header__desktop__logo">
+            <a href="#"><img src="{{ module.logo.src }}" alt="{{ module.logo.alt }}"></a>
+          </div>
+        </div>
+      </div>
+      <div class="column is-12-mobile is-12-tablet is-12-desktop is-12-widescreen is-12-fullhd">
+        {%- macro render_link_item(link,depth,looop)-%}
+        {%- if link != [] && link.label -%}
+        <li class="menu-item menu-depth-{{depth}}{% if link.activeBranch %} active-branch{% endif %}{% if link.activeNode %} active{% endif %}">
+          <a href="{{link.url if link.url else '#'}}">{{link.label}}</a>
+          {%- if link.children -%}
+          <label title="Toggle Drop-down" class="drop-icon" for="sm{{looop}}_{{depth}}"><i class="fas fa-angle-down"></i></label>
+          <input type="checkbox" id="sm{{looop}}_{{depth}}">
+          <ul class="sub-menu">
+            {% set depth = depth + 1%}
+            {%- for sublink in link.children -%}
+            {{render_link_item(sublink,depth,loop.index)}}
+            {%- endfor -%}
+          </ul>
+          {%- endif -%}
+        </li>
+
+
+        {% if loop.length%2 == 0  %}
+        {% set parnumber = loop.length / 2 %}
+        {% if loop.index == parnumber %}
+
+        <li class="logo-middle">
+          <img src="{{ module.logo.src }}" alt="{{ module.logo.alt }}"> 
+        </li>
+
+        {% endif %}
+        {% else %}
+
+        {% set parnumber = (loop.length + 1) / 2 %}
+        {% if loop.index == parnumber %}
+
+        <li class="logo-middle">
+          <img src="{{ module.logo.src }}" alt="{{ module.logo.alt }}"> 
+        </li>
+
+        {% endif %}
+
+        {% endif %}
+
+
+        {%- endif -%}
+        {%- endmacro -%}
+
+        {% set menu = menu(module.menu_field , "site_root").children %}
+
+        <nav id="menu">
+          <label for="tm" id="toggle-menu"><img src="{{ module.logo.src }}" alt="{{ module.logo.alt }}"><span class="drop-icon"><i class="fas fa-bars"></i></span></label>
+          <input type="checkbox" id="tm">
+          <ul class="main-menu cf">
+
+            {% for link in menu %}   
+            {{render_link_item(link,1,loop.index)}}
+            {% endfor %}
+
+            <!--search section-->
+            <li>
+              <a data-fancybox="hello" data-src="#hello" href="javascript:;" class="btn btn-primary search" >
+                <img src="https://f.hubspotusercontent40.net/hubfs/9307597/Vector.svg" alt="search">
+              </a>
+              <div id="hello" action="" method="post" style="display: none;">
+                <form action="/{{ site_settings.content_search_results_page_path }}">
+                  <input type="search" class="hs-search-field__input" name="term" autocomplete="off" placeholder="Search Results...">
+                  {# 
+              You can set additional search parameters by adding hidden inputs 
+              like the example below. Both the typeahead and search results 
+              modules will accept these, except 'limit' which only works for results.
+
+              <input type="hidden" name="limit" value="5">
+              #}
+                </form>
+              </div>
+            </li>
+
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
